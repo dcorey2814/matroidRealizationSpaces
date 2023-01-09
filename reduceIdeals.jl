@@ -75,6 +75,11 @@ function ideal_vars(Igens)
     return unique!(vcat([vars(gen) for gen in Igens]...))
 end
 
+#function to produce new ideal generators
+function n_new_Igens(x, tx, Igens, R, varlist)    
+    return unique!([sub_v(x, tx, gen, R, varlist) for gen in Igens])
+end
+
 #function to produce new subgroup generators
 function n_new_Sgens(x, tx, Sgens, R, varlist)
     return unique!([sub_v(x, tx, gen, R, varlist) for gen in Sgens])
