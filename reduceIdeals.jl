@@ -25,6 +25,7 @@ end
 #isolate variable v
 function nn_isolate_v(v,f,R,S)
 
+   #println("try to isolate = ", v)
     (degree(f,v) == 1) || return "can't isolate, degree of variable must be 1"
     no_v = [term(f,i) for i in 1:length(f) if !(v in vars(monomial(f,i)))]
     (length(no_v) != 0) || return "can't isolate, variable is a factor"
@@ -38,13 +39,24 @@ end
 #function that finds generators of ideal that contain x, checks if coefficient is in semigroup, then solves
 function find_solution_x(x,Igens,R,S)
     
-    with_x_deg_1 = [gen for gen in Igens if (x in vars(gen) && degree(gen,x)==1)]    
+    with_x_deg_1 = [gen for gen in Igens if (x in vars(gen) && degree(gen,x)==1)] 
+    
+    #if length(with_x_deg_1) == 0
+    #    w = [(gen, x, vars(gen), degree(gen,x)) for gen in Igens] 
+       #println("w = ", w)
+    #end
+    
+      
+   #println("with_x_deg_1 = ", with_x_deg_1)
+    
     (length(with_x_deg_1) != 0) || return "can't isolate" 
 
     for gen in with_x_deg_1
         t = coefficient_v(x,gen,R)        
+       #println("t test = ", t)
         if t in S
-            return nn_isolate_v(x,gen,R,S)
+        	println("t inverted = ", t)
+            return nn_isolate_v(x, gen, R, S)
         else 
             return "can't solve for variable"
         end
@@ -92,39 +104,51 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
         return "Not realizable"
         
     else
-         
+       #println("Igens1 = ", Igens)
         Ivars = ideal_vars(Igens); 
+        
+        #println("Ivars")
+        #println("Ivars = ", Ivars)
+        
         S =  MPolyPowersOfElement(R , Sgens); 
         for x in Ivars 
             tx = find_solution_x(x, Igens, R, S)
+           #println("x, find solution = ", x, ",  ", tx)
             if tx isa String
                 continue
             else 
-                Igens = n_new_Igens(x,tx,Igens, R, varlist); 
-                Sgens = n_new_Sgens(x,tx,Sgens, R, varlist)
+            	 #println("x = ", x)
+                Igens_new = n_new_Igens(x, tx, Igens, R, varlist); 
+                
+               #println("Igens_new = ", Igens_new)
+                
+                Sgens_new = n_new_Sgens(x, tx, Sgens, R, varlist)
     
                 #(R(0) in Sgens) && error("Nonrealizable") 
                 
-                return (Igens, Sgens, R, varlist, fullyReduced)
+                return (Igens_new, Sgens_new, R, varlist, fullyReduced)
          
             end
         
 
         end
     return (Igens, Sgens, R, varlist, true)
-        end 
+    end 
 end
 
 
 function reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced = false)
     
-    if reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced) isa String
+    output = reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
+    if output isa String
+    #if reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced) isa String
         
         return "Not Realizable"
         
     else
+    (Igens, Sgens, R, varlist, fullyReduced) = output
         if !fullyReduced
-            (Igens, Sgens, R, varlist, fullyReduced) = reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
+            
             return reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced)
         else
             return (Igens, Sgens, R, varlist, fullyReduced)
