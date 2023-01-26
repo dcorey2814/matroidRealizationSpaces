@@ -86,29 +86,49 @@ function n_new_Sgens(x, tx, Sgens, R, varlist)
 end
 
 function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
-    Ivars = ideal_vars(Igens); 
-    S =  MPolyPowersOfElement(R , Sgens); 
-    for x in Ivars 
-        tx = find_solution_x(x, Igens, R, S)
-        if tx isa String
-            continue
-        else 
-            Igens = n_new_Igens(x,tx,Igens, R, varlist); 
-            Sgens = n_new_Sgens(x,tx,Sgens,  R, varlist)
-#            (R(0) in Sgen) && error("Nonrealizable") 
-            return (Igens, Sgens, R, varlist, fullyReduced)
+    
+    if R(0) in Sgens
+        
+        return "Not realizable"
+        
+    else
+         
+        Ivars = ideal_vars(Igens); 
+        S =  MPolyPowersOfElement(R , Sgens); 
+        for x in Ivars 
+            tx = find_solution_x(x, Igens, R, S)
+            if tx isa String
+                continue
+            else 
+                Igens = n_new_Igens(x,tx,Igens, R, varlist); 
+                Sgens = n_new_Sgens(x,tx,Sgens, R, varlist)
+    
+                #(R(0) in Sgens) && error("Nonrealizable") 
+                
+                return (Igens, Sgens, R, varlist, fullyReduced)
+         
+            end
+        
+
         end
-    end
     return (Igens, Sgens, R, varlist, true)
+        end 
 end
 
 
 function reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced = false)
-    if !fullyReduced
-        (Igens, Sgens, R, varlist, fullyReduced) = reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
-        return reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced)
+    
+    if reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced) isa String
+        
+        return "Not Realizable"
+        
     else
-        return (Igens, Sgens, R, varlist, fullyReduced)
+        if !fullyReduced
+            (Igens, Sgens, R, varlist, fullyReduced) = reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
+            return reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced)
+        else
+            return (Igens, Sgens, R, varlist, fullyReduced)
+        end
     end
 end
 
