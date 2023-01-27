@@ -55,7 +55,7 @@ function find_solution_x(x,Igens,R,S)
         t = coefficient_v(x,gen,R)        
        #println("t test = ", t)
         if t in S
-        	println("t inverted = ", t)
+        	#println("t inverted = ", t)
             return nn_isolate_v(x, gen, R, S)
         else 
             return "can't solve for variable"
