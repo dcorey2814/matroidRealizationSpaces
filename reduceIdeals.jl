@@ -157,5 +157,63 @@ function reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced = false)
 end
 
 
+function clean(f,R)
+    
+    if !(f == 0)
+    
+        if length(f) == 1
+            
+            return R(coeff(f,1))
+            
+        else
+            
+            fFactors = factor(f)
+    
+            FactorsDict = Dict(fFactors)
+    
+            cleanf = prod([k^(FactorsDict[k]) for k in keys(FactorsDict) if (length(k)>1||is_constant(k))])
+        
+            return cleanf
+        
+        end
+        
+    else
+        
+        return f
+        
+    end
+    
+end
+
+function matroid_to_reduced_expression(Q, F,k)
+    
+    charts = [c for c in circuits(Q) if length(c) == rank(Q)+1]
+    A = charts[1]
+    RQ = matroid_realization_space(Q, A, F)
+    R = parent(RQ[1][1])
+    Sgens = [s for s in RQ[2] if length(s) <= k]#new 13.1.2023
+    I = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
+    
+    
+ 
+    if I isa String
+        
+        return I
+        
+     #I[1] = ideal generators, I[2] = subgroup generators   
+    else
+        
+       Iclean = unique!([clean(f,R) for f in I[1]])
+    
+            
+       return (Iclean, I[2])
+        
+       # return(I[1],I[2])
+        
+    end
+end
+
+
+
 
 
