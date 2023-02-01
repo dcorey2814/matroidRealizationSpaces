@@ -101,7 +101,7 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
     
     if R(0) in Sgens
         
-        return "Not realizable"
+        return "Not realizable 0 in Semigroup"
         
     else
        #println("Igens1 = ", Igens)
@@ -143,7 +143,7 @@ function reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced = false)
     if output isa String
     #if reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced) isa String
         
-        return "Not Realizable"
+        return "Not Realizable 0 in Semigroup"
         
     else
     (Igens, Sgens, R, varlist, fullyReduced) = output
