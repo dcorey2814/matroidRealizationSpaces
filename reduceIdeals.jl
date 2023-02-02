@@ -89,7 +89,7 @@ end
 
 #function to produce new ideal generators
 function n_new_Igens(x, tx, Igens, R, varlist)    
-    return unique!([sub_v(x, tx, gen, R, varlist) for gen in Igens])
+    return unique!([clean(sub_v(x, tx, gen, R, varlist),R) for gen in Igens])
 end
 
 #function to produce new subgroup generators
