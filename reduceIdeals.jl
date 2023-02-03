@@ -157,6 +157,7 @@ function reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced = false)
 end
 
 
+#remove monomial factors
 function clean(f,R)
     
     if !(f == 0)
@@ -184,6 +185,8 @@ function clean(f,R)
     end
     
 end
+ 
+#data for realization spaces after reduction
 
 function matroid_to_reduced_expression(Q, F,k)
     
@@ -212,8 +215,6 @@ function matroid_to_reduced_expression(Q, F,k)
         
     end
 end
-
-
 
 
 
