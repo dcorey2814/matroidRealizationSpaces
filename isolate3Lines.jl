@@ -65,10 +65,3 @@ end
 
 
 close(io)
-
-###
-
-d3n11_3lines = vec(readlines("d3n11_3lines.dat"))
-for i in 1:5000
-    println(count_3_lines_thru_all_points(matroid_from_revlex_basis_encoding(d3n11_3lines[i], 3, 11))) 
-end
