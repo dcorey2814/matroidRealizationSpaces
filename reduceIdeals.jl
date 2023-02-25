@@ -217,4 +217,38 @@ function matroid_to_reduced_expression(Q, F,k)
 end
 
 
-
+#reduce TSC ideals
+function TSC_to_reduced_expression(M, F)
+    
+    charts = bases(M)
+    #println("1")
+    A = charts[1]
+   # println("2")
+    RQ = new_TSC(M,F)
+    #println("3")
+    R = parent(RQ[1][1])
+    #println("4")
+    Sgens = [s for s in RQ[2]]#new 13.1.2023
+    #print(length(Sgens),"\n")
+    #print(length(gens(RQ[1])))
+    #println("5")
+    I = reduce_ideal_full(gens(RQ[1]), Sgens, R, gens(R), false)
+   # println("6")
+    
+     varlist = 
+    if I isa String
+        
+        return I
+        
+     #I[1] = ideal generators, I[2] = subgroup generators   
+    else
+        
+       Iclean = unique!([clean(f,R) for f in I[1]])
+    
+            
+       return (Iclean, I[2])
+        
+       # return(I[1],I[2])
+        
+    end
+end
