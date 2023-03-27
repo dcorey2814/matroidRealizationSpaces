@@ -1,0 +1,110 @@
+using Combinatorics
+pm = Polymake
+
+include("matroid_realization.jl");
+include("reduceIdeals.jl")
+
+d3n11 = vec(readlines("d3n11.dat"))
+d3n11_3_lines = vec(readlines("d3n11_3lines.dat"))
+
+
+
+#checks for integer generator
+
+function int_gens(I)
+    
+    ints = [x for x in I if is_constant(x)]
+    
+    if length(ints)>1
+        
+        return true
+        
+    else
+        
+        return false
+        
+    end
+    
+end
+
+
+#classification over QQ
+for z in 1532:length(d3n11_3_lines)
+    
+    #println(z,"\n\n")
+  
+    Mz = matroid_from_revlex_basis_encoding(d3n11_3_lines[z], 3, 11)
+    I = matroid_to_reduced_expression(Mz, QQ,2)
+    
+    #println("ch1")
+    if I[1] == [0] #reduces to 0
+        
+        #push!(zero_ideal,z)
+        
+        open("sorting/zero_ideal2.dat", "a")do file
+        write(file, String(d3n11_3_lines[z]),"\n")
+        end
+        continue
+    
+    elseif (1 in I[1] || -1 in I[1] || I == "Not Realizable 0 in Semigroup")
+        
+    #println("ch2")
+        
+        #push!(not_realizable,z)
+        open("sorting/not_realizable2.dat", "a")do file
+        write(file, String(d3n11_3_lines[z]),"\n")
+        end
+        continue
+        
+    elseif int_gens(I[1])
+        
+               
+    #println("ch3")
+        
+       # push!(int_generator,z)
+    
+        open("sorting/int_generator2.dat", "a")do file
+        write(file, String(d3n11_3_lines[z]),"\n")
+        end
+        continue
+        
+    elseif length(I[1]) == 2
+            
+        if (length(vars(I[1][2])) == 1 && degree(I[1][2],vars(I[1][2])[1]) >=2)
+                
+            #push!(simplified_principle_reducible,z)
+            
+        open("sorting/simplified_principle_reducible2.dat", "a")do file
+        write(file, String(d3n11_3_lines[z]),"\n")
+        end
+        continue
+                
+        else
+                
+        #push!(simplified_principle_n_reducible,z)
+        open("sorting/simplified_principle_n_reducible2.dat", "a")do file
+        write(file, String(d3n11_3_lines[z]),"\n")
+        end
+        continue
+        
+        end
+            
+    elseif length(I[1])>2
+        
+            #push!(simplified_not_principle,z)
+        
+    
+        open("sorting/simplified_not_principle2.dat", "a")do file
+        write(file, String(d3n11_3_lines[z]),"\n")
+        end
+        continue
+    else
+        
+        #push!(net,z)
+        open("sorting/net2.dat", "a")do file
+        write(file, String(d3n11_3_lines[z]),"\n")
+        end
+        continue
+        
+    end
+end
