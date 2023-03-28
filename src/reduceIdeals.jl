@@ -97,7 +97,10 @@ function n_new_Sgens(x, tx, Sgens, R, varlist)
     return unique!([sub_v(x, tx, gen, R, varlist) for gen in Sgens])
 end
 
-function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
+
+
+
+function reduce_ideal_one_step(Igens, Sgens, R, varlist, Sall, fullyReduced)
     
     if R(0) in Sgens
         
@@ -112,8 +115,8 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
         
         S =  MPolyPowersOfElement(R , Sgens); 
         for x in Ivars 
-            tx = find_solution_x(x, Igens, R, S)
-           #println("x, find solution = ", x, ",  ", tx)
+           tx = find_solution_x(x, Igens, R, S)
+           println("x, find solution = ", x, " -> ", tx)
             if tx isa String
                 continue
             else 
@@ -126,32 +129,34 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
     
                 #(R(0) in Sgens) && error("Nonrealizable") 
                 
-                return (Igens_new, Sgens_new, R, varlist, fullyReduced)
+                Sall_new = n_new_Sgens(x, tx, Sall, R, varlist)
+                
+                return (Igens_new, Sgens_new, R, varlist, Sall_new, fullyReduced)
          
             end
         
 
         end
-    return (Igens, Sgens, R, varlist, true)
+    return (Igens, Sgens, R, varlist, Sall, true)
     end 
 end
 
 
-function reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced = false)
+function reduce_ideal_full(Igens, Sgens, R, varlist, Sall, fullyReduced = false)
     
-    output = reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
+    output = reduce_ideal_one_step(Igens, Sgens, R, varlist, Sall, fullyReduced)
     if output isa String
     #if reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced) isa String
         
         return "Not Realizable 0 in Semigroup"
         
     else
-    (Igens, Sgens, R, varlist, fullyReduced) = output
+    (Igens, Sgens, R, varlist, Sall, fullyReduced) = output
         if !fullyReduced
             
-            return reduce_ideal_full(Igens, Sgens, R, varlist, fullyReduced)
+            return reduce_ideal_full(Igens, Sgens, R, varlist, Sall, fullyReduced)
         else
-            return (Igens, Sgens, R, varlist, fullyReduced)
+            return (Igens, Sgens, R, varlist, Sall, fullyReduced)
         end
     end
 end
@@ -188,17 +193,16 @@ end
  
 #data for realization spaces after reduction
 
-function matroid_to_reduced_expression(Q, F,k)
+function matroid_to_reduced_expression(Q, F, k)
     
     charts = [c for c in circuits(Q) if length(c) == rank(Q)+1]
     A = charts[1]
     RQ = matroid_realization_space(Q, A, F)
     R = parent(RQ[1][1])
     Sgens = [s for s in RQ[2] if length(s) <= k]#new 13.1.2023
-    I = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
+    I = reduce_ideal_full(RQ[1], Sgens, R, gens(R), RQ[2], false)
     
     
- 
     if I isa String
         
         return I
@@ -209,12 +213,15 @@ function matroid_to_reduced_expression(Q, F,k)
        Iclean = unique!([clean(f,R) for f in I[1]])
     
             
-       return (Iclean, I[2])
+       return (Iclean, I[2], I[5])
         
        # return(I[1],I[2])
         
     end
 end
+
+
+
 
 
 #reduce TSC ideals
