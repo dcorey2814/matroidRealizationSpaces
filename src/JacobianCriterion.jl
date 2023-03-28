@@ -17,7 +17,8 @@ function singular_locus(R::MPolyRing, x::Vector{T}, I) where T <: MPolyElem
     	return ideal([R(1)])
     end
     Igens = gens(I); 
-    Jmat = jacobian_matrix(R, x, Igens) ;
+    Jmat = jacobian_matrix(R, x, Igens) ; #println(Jmat)
+    #println(minors(Jmat, c))
     return I + ideal(minors(Jmat, c))
 end
 
@@ -54,3 +55,6 @@ function simplified_2_singular_locus(Igens, Sgens)
     SinvR, inc = Localization(S)
     return saturated_ideal(inc(SingL))
 end
+
+
+

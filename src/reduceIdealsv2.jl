@@ -156,10 +156,22 @@ end
  
 #data for realization spaces after reduction
 
+
+function count_nonbases_chart_int2(Q, A)
+    NBs = nonbases(Q)
+    return length([nb for nb in NBs if length(intersect(A,nb)) == 2])
+end
+
 function matroid_to_reduced_expression(Q, F, k = 0)
     
     charts = [c for c in circuits(Q) if length(c) == rank(Q)+1]
-    A = charts[1]
+    
+    overlapCharts = [count_nonbases_chart_int2(Q, c) for c in charts]
+    A = argmax(c -> count_nonbases_chart_int2(Q, c) , charts)
+    
+   
+    
+#    A = charts[1]
     RQ = matroid_realization_space(Q, A, F)
     R = parent(RQ[1][1])
     
