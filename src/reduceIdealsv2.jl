@@ -98,7 +98,7 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
         
         for x in Ivars 
            tx = find_solution_v(x, Igens, R, Sgens)
-           println("x, find solution = ", x, " -> ", tx)
+           #println("x, find solution = ", x, " -> ", tx)
             if tx isa String
                 continue
             else 
@@ -138,20 +138,20 @@ end
 
 #remove unit factors
 function clean(f, R, Sgens)
+    #println(f, " clean enter")
     
-    if !(f == 0)
-        if length(f) == 1
-            return R(coeff(f,1))
-        else     
-            fFactors = factor(f)
-            FactorsDict = Dict(fFactors)
-            cleanf = prod([k^(FactorsDict[k]) for k in keys(FactorsDict) if !(k in Sgens) || is_constant(k)])
-       
-            return cleanf
-        end
+    fFactors = factor(f)
+    FactorsDict = Dict(fFactors)
+    
+    cleanf_arr = [k^(FactorsDict[k]) for k in keys(FactorsDict) if !(k in Sgens) || is_constant(k)]
+    
+    if length(cleanf_arr) > 0
+    	cleanf = prod(cleanf_arr)
     else
-        return f
+        cleanf = unit(fFactors)
     end
+    #println(cleanf, " clean exit")
+    return cleanf 
 end
  
 #data for realization spaces after reduction

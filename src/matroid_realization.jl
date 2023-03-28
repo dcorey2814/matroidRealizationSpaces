@@ -322,7 +322,7 @@ function matroid_realization_space_given_ring(d::Int, n::Int, M::Matroid,
     SinvR , iota = Localization(R, S)
     
 
-    Igens = [det(X[:, nb]) for nb in NBs ]
+    Igens = [det(X[:, nb]) for nb in NBs]
     Iloc = ideal(SinvR, Igens)
     
     return(unique!(Igens), unique!(basesX))
@@ -334,6 +334,9 @@ function matroid_realization_space_given_ring(d::Int, n::Int, M::Matroid,
     #  return (X, W)
     #end
 end
+
+
+
 
 
 
