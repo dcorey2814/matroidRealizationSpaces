@@ -5,12 +5,14 @@ include("src/isolate3Lines.jl")
 
 db = Polymake.Polydb.get_db();
 collection = db["Matroids.Small"];
-cursor=Polymake.Polydb.find(collection, Dict("RANK" => 3,"SIMPLE"=>true,"N_ELEMENTS"=>12), opts=Dict("limit"=>10000));
+cursor=Polymake.Polydb.find(collection, Dict("RANK" => 3,"SIMPLE"=>true,"N_ELEMENTS"=>12));
+
+#cursor=Polymake.Polydb.find(collection, Dict("RANK" => 3,"SIMPLE"=>true,"N_ELEMENTS"=>12), opts=Dict("skip"=>100001, "limit"=>200000));
 
 n3C12 = collect(powerset(1:12, 3, 3));
 n3C12 = sort(n3C12, by =  x-> reverse(x));
 
-io = open("matroids_d3n12/d3n12_3lines-100K.dat", "w")
+io = open("matroids_d3n12/d3n12_3lines.dat", "w")
 
 #i = 0;
 for c in cursor
@@ -26,13 +28,14 @@ for c in cursor
     end
 
     # checkpoint
-#    if (i%100000 == 0)
-#        close(io)
-#        global io = open("matroids_d3n12/d3n12_3lines-100K.dat", "a")
-#    end
+    if (i%100000 == 0)
+        close(io)
+        global io = open("matroids_d3n12/d3n12_3lines.dat", "a")
+        println(i)
+    end
 
-#    global i += 1
-#    println(i)
+    global i += 1
+
 end
 
 close(io)
