@@ -14,7 +14,7 @@ n3C12 = sort(n3C12, by =  x-> reverse(x));
 
 io = open("matroids_d3n12/d3n12_3lines.dat", "w")
 
-#i = 0;
+i = 0;
 for c in cursor
     M = Matroid(c)
     ns = count_3_lines_thru_all_points(M)
