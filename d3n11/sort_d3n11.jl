@@ -27,14 +27,14 @@ end
 sortingDir = joinpath(currentDir, "d3n11/sorting") # makes the directory "sorting", if not already created.
 make_directory(sortingDir)
 
-file_not_realizable = open(joinpath(sortingDir, "not_realizable.dat"), "a") 
-file_zero_ideal = open(joinpath(sortingDir, "zero_ideal.dat"), "a")
-file_int_generator = open(joinpath(sortingDir, "int_generator.dat"), "a")
-file_principal_univariate = open(joinpath(sortingDir, "principal_univariate.dat"), "a")
-file_principal_multivariate = open(joinpath(sortingDir, "principal_multivariate.dat"), "a")
-file_not_principal_univariate = open(joinpath(sortingDir, "not_principal_univariate.dat"), "a")
-file_not_principal_multivariate = open(joinpath(sortingDir, "not_principal_multivariate.dat"), "a")
-file_net = open(joinpath(sortingDir, "net.dat"), "a")
+file_not_realizable = open(joinpath(sortingDir, "not_realizable.dat"), "w") 
+file_zero_ideal = open(joinpath(sortingDir, "zero_ideal.dat"), "w")
+file_int_generator = open(joinpath(sortingDir, "int_generator.dat"), "w")
+file_principal_univariate = open(joinpath(sortingDir, "principal_univariate.dat"), "w")
+file_principal_multivariate = open(joinpath(sortingDir, "principal_multivariate.dat"), "w")
+file_not_principal_univariate = open(joinpath(sortingDir, "not_principal_univariate.dat"), "w")
+file_not_principal_multivariate = open(joinpath(sortingDir, "not_principal_multivariate.dat"), "w")
+file_net = open(joinpath(sortingDir, "net.dat"), "w")
 
 #classification over QQ
 
