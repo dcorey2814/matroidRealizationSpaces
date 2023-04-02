@@ -27,7 +27,7 @@ function singular_locus(R::MPolyRing, x::Vector{T}, I, Sgens) where T <: MPolyEl
     	return ideal([R(1)])
     end
     Igens = gens(I); 
-    Jmat = jacobian_matrix(R, x, Igens) ; println(Jmat)
+    Jmat = jacobian_matrix(R, x, Igens) ; #println(Jmat)
     #println(minors(Jmat, c))
     return I + ideal(minors(Jmat, c))
 end
