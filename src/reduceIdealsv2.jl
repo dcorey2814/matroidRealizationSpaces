@@ -168,9 +168,7 @@ function matroid_to_reduced_expression(Q, F, k = 0)
     
     overlapCharts = [count_nonbases_chart_int2(Q, c) for c in charts]
     A = argmax(c -> count_nonbases_chart_int2(Q, c) , charts)
-    
-   
-    
+     
 #    A = charts[1]
     RQ = matroid_realization_space(Q, A, F)
     R = parent(RQ[1][1])
@@ -185,26 +183,17 @@ function matroid_to_reduced_expression(Q, F, k = 0)
     I = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
 #    I = reduce_ideal_full(RQ[1], RQ[2], R, gens(R), false)
      
-    
     if I isa String
-        
         return I
-        
      #I[1] = ideal generators, I[2] = subgroup generators   
     else
         
        Iclean = unique!([clean(f, R, I[2]) for f in I[1]])
-    
+       Iclean = filter(x-> x!= R(0), Iclean)
        return (Iclean, I[2])
-        
        # return(I[1],I[2])
-        
     end
 end
-
-
-
-
 
 #reduce TSC ideals
 function TSC_to_reduced_expression(M, F)
