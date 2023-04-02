@@ -79,12 +79,14 @@ end
 
 #function to produce new ideal generators
 function n_new_Igens(x, tx, Igens, newSgens, R, varlist)    
-    return unique!([clean(sub_v(x, tx, gen, R, varlist), R, newSgens) for gen in Igens])
+    preIgens = unique!([clean(sub_v(x, tx, gen, R, varlist), R, newSgens) for gen in Igens])
+    return filter(x-> x!= R(0), preIgens)
 end
 
 #function to produce new subgroup generators
 function n_new_Sgens(x, tx, Sgens, R, varlist)
-    return unique!([sub_v(x, tx, gen, R, varlist) for gen in Sgens])
+    preSgens = unique!([sub_v(x, tx, gen, R, varlist) for gen in Sgens])
+    return gens_2_factors(preSgens)
 end
 
 function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
@@ -102,7 +104,7 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
             if tx isa String
                 continue
             else 
-            	 Sgens_new = n_new_Sgens(x, tx, Sgens, R, varlist);
+                Sgens_new = n_new_Sgens(x, tx, Sgens, R, varlist);
                 Igens_new = n_new_Igens(x, tx, Igens, Sgens_new, R, varlist); 
 
                 return (Igens_new, Sgens_new, R, varlist, fullyReduced)
@@ -178,19 +180,23 @@ function matroid_to_reduced_expression(Q, F, k = 0)
     else
     	Sgens = RQ[2]
     end
+    
     Sgens = gens_2_factors(Sgens)
     
-    I = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
+    reducedData = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
 #    I = reduce_ideal_full(RQ[1], RQ[2], R, gens(R), false)
      
-    if I isa String
-        return I
+    if reducedData isa String
+        return reducedData
      #I[1] = ideal generators, I[2] = subgroup generators   
     else
-        
-       Iclean = unique!([clean(f, R, I[2]) for f in I[1]])
-       Iclean = filter(x-> x!= R(0), Iclean)
-       return (Iclean, I[2])
+       
+       newI = reducedData[1]
+       newS = reducedData[2]
+       
+#       Iclean = unique!([clean(f, R, newS) for f in newI])
+#       Iclean = filter(x-> x!= R(0), Iclean)
+       return (newI, newS)
        # return(I[1],I[2])
     end
 end

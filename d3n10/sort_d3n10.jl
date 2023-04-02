@@ -14,7 +14,7 @@ d3n10_3_lines = vec(readlines(joinpath(currentDir, "d3n10/3lines_d3n10.dat")));
 
 function int_gens(I)
     ints = [x for x in I if is_constant(x)]
-    return length(ints)>1    
+    return length(ints)>0    
 end
 
 function make_directory(dir::AbstractString)
@@ -25,7 +25,7 @@ function make_directory(dir::AbstractString)
 end 
 
 
-sortingDir = joinpath(currentDir, "d3n10/sorting")
+sortingDir = joinpath(currentDir, "d3n10/sorting") # makes the directory "sorting", if not already created.
 make_directory(sortingDir)
 
 file_not_realizable = open(joinpath(sortingDir, "not_realizable.dat"), "w") 
@@ -33,7 +33,8 @@ file_zero_ideal = open(joinpath(sortingDir, "zero_ideal.dat"), "w")
 file_int_generator = open(joinpath(sortingDir, "int_generator.dat"), "w")
 file_principal_univariate = open(joinpath(sortingDir, "principal_univariate.dat"), "w")
 file_principal_multivariate = open(joinpath(sortingDir, "principal_multivariate.dat"), "w")
-file_not_principal = open(joinpath(sortingDir, "not_principal.dat"), "w")
+file_not_principal_univariate = open(joinpath(sortingDir, "not_principal_univariate.dat"), "w")
+file_not_principal_multivariate = open(joinpath(sortingDir, "not_principal_multivariate.dat"), "w")
 file_net = open(joinpath(sortingDir, "net.dat"), "w")
 
 #classification over QQ
@@ -68,14 +69,25 @@ for z in 1:length(d3n10_3_lines)
             write(file_principal_univariate, String(Mzstr),"\n")
             continue
         else
-            write(file_principal_univariate, String(Mzstr),"\n")
+            write(file_principal_multivariate, String(Mzstr),"\n")
             continue
         end
         
     elseif length(Igens)>1
-        write(file_not_principal, String(Mzstr),"\n")
-        continue
         
+        Ivars = ideal_vars(Igens) 
+        if length(Ivars) == 1
+            if isone(ideal(Igens)) 
+                write(file_not_realizable, String(Mzstr),"\n")
+                continue
+            else
+                write(file_not_principal_univariate, String(Mzstr),"\n")
+                continue
+            end
+        else
+            write(file_not_principal_multivariate, String(Mzstr),"\n")
+            continue
+        end
     else
         write(file_net, String(Mzstr),"\n")
         continue
