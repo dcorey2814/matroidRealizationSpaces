@@ -29,6 +29,7 @@ function singular_locus(R::MPolyRing, x::Vector{T}, I, Sgens) where T <: MPolyEl
     Igens = gens(I); 
     Jmat = jacobian_matrix(R, x, Igens) ; #println(Jmat)
     #println(minors(Jmat, c))
+    println(isone(I + ideal(minors(Jmat, c))))
     return I + ideal(minors(Jmat, c))
 end
 
@@ -76,8 +77,30 @@ function simplified_2_singular_locus(Igens, Sgens)
 end
 
 
-function find_discriminant(Igens, Sgens)
-    nR, nv, nIgens, nSgens = remove_excess_vars(Igens, Sgens)
+function remove_excess_vars_Igens(Igens)
+    vars_used = union!([vars(f) for f in Igens]...)
+    
+    R = parent(Igens[1])
+    varlist = gens(R)
+    Rred, new_varlist = PolynomialRing(coefficient_ring(R) , :y=>(1:length(vars_used)))
+    pr = []; 
+    j=1
+    for v in varlist
+        if v in vars_used
+            push!(pr, new_varlist[j])
+            j=j+1
+        else
+            push!(pr, Rred(0))
+        end
+    end
+    
+    phi = hom(R, Rred, a->a, pr)
+    return (Rred, new_varlist, phi.(Igens))
+end
+
+
+function find_discriminant(Igens)
+    nR, nv, nIgens = remove_excess_vars_Igens(Igens)
     R, y = PolynomialRing(QQ, "y")
     f = nIgens[1]
     phi = hom(nR, R, a->a, [y])    
