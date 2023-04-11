@@ -12,9 +12,12 @@ function stepwise_saturation(I, Sgens)
 end
 
 # creates the ideal of the singular locus of the ideal I
-function singular_locus(R::MPolyRing, x::Vector{T}, I, Sgens) where T <: MPolyElem
+function singular_locus(R::MPolyRing, x::Vector{T}, I, Sgens, do_saturation = false) where T <: MPolyElem
     
-    I = stepwise_saturation(I, Sgens)
+    if do_saturation
+        I = stepwise_saturation(I, Sgens)
+    end
+        
     m_primes = minimal_primes(I); 
     codim_m_primes = unique!(codim.(m_primes)); 
     
@@ -29,8 +32,11 @@ function singular_locus(R::MPolyRing, x::Vector{T}, I, Sgens) where T <: MPolyEl
     Igens = gens(I); 
     Jmat = jacobian_matrix(R, x, Igens) ; #println(Jmat)
     #println(minors(Jmat, c))
-    println(isone(I + ideal(minors(Jmat, c))))
-    return I + ideal(minors(Jmat, c))
+    #println(isone(I + ideal(minors(Jmat, c))))
+    
+    Sing = I + ideal(minors(Jmat, c))
+    
+    return stepwise_saturation(Sing, Sgens)
 end
 
 
@@ -64,17 +70,57 @@ end
 function simplified_2_singular_locus(Igens, Sgens)
     L = remove_excess_vars(Igens, Sgens)
     
-    #newI = stepwise_saturation(ideal(L[3]), L[4]);
-    
-    #return newI
-    
     SingL = singular_locus(L[1], L[2], ideal(L[3]), L[4]) 
     if SingL isa String
         return SingL
     end
-    J = stepwise_saturation(SingL, L[4])
-    return J
+    #J = stepwise_saturation(SingL, L[4])
+    return SingL
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function remove_excess_vars_Igens(Igens)
@@ -100,6 +146,12 @@ end
 
 
 function find_discriminant(Igens)
+
+    length(Igens) == 1 || error("not principal")
+    xs = vars(Igens[1])
+    length(xs) == 1 || error("not univariate")
+
+    
     nR, nv, nIgens = remove_excess_vars_Igens(Igens)
     R, y = PolynomialRing(QQ, "y")
     f = nIgens[1]
