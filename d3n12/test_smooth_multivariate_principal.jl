@@ -47,10 +47,12 @@ end
 singularDir = make_directory(joinpath(currentDir, "d3n12/singular"))
 
 
-file_pm_singular = open(joinpath(singularDir, string("principal_multivariate_singular.",ARGS[2],".dat")), "a")
-file_pm_smooth = open(joinpath(singularDir, string("principal_multivariate_smooth.",ARGS[2],".dat")), "a")
+file_pm_singular = open(joinpath(singularDir, string("principal_multivariate_singular.",ARGS[2],".dat")), "w")
+file_pm_smooth = open(joinpath(singularDir, string("principal_multivariate_smooth.",ARGS[2],".dat")), "w")
 
 filename_nonrealizable = joinpath(currentDir, "d3n12",  string("new_nonrealizable.",ARGS[2],".dat"))
+
+filename_skipped_geq3vars = joinpath(singularDir, string("principal_multivariate_geq3vars.",ARGS[2],".dat"))
 
 
 for z in 1:length(d3n12_pm)
@@ -61,7 +63,15 @@ for z in 1:length(d3n12_pm)
     
     length(Igens) == 1 || error("not principal")
     
+    f = Igens[1]
+    vf = vars(f)
     
+    if vf > 2
+        open(filename_skipped_geq3vars, "a")do file
+            write(file, Mzstr, "\n")
+        end
+    continue
+    end
     
     
     I = simplified_2_singular_locus_with_saturation_check(Igens, Sgens, Mzstr, filename_nonrealizable);
@@ -74,15 +84,6 @@ for z in 1:length(d3n12_pm)
         write(file_pm_smooth, string(z), "\n")
     end
     println(z, ": ", I)
-
-    #I = simplified_2_singular_locus(Igens, Sgens)
-    #if !isone(I)
-    #    write(file_pm_singular, String(Mzstr), "\n")
-    #else
-    #    write(file_pm_smooth, String(Mzstr), "\n")
-    #end
-    #println(z, ": ", length(Igens[1]))
-
 end
 
 close(file_pm_singular)
