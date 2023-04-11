@@ -26,7 +26,7 @@ end
 function simplified_2_singular_locus_with_saturation_check(Igens, Sgens, Qstr, f="")
     L = remove_excess_vars(Igens, Sgens)
     
-    I = stepwise_saturation(ideal(L[3]), Sgens)
+    I = stepwise_saturation(ideal(L[3]), L[4])
     
     if length(f) > 0
         if isone(I)  
@@ -54,7 +54,7 @@ filename_nonrealizable = joinpath(currentDir, "d3n12",  string("new_nonrealizabl
 
 filename_skipped_geq3vars = joinpath(singularDir, string("principal_multivariate_geq3vars.",ARGS[2],".dat"))
 
-
+#for z in 1:300
 for z in 1:length(d3n12_pm)
 
     Mzstr = d3n12_pm[z]
@@ -66,7 +66,8 @@ for z in 1:length(d3n12_pm)
     f = Igens[1]
     vf = vars(f)
     
-    if vf > 2
+    if length(vf) > 2
+        println(z, ": ", vf)
         open(filename_skipped_geq3vars, "a")do file
             write(file, Mzstr, "\n")
         end
@@ -83,7 +84,7 @@ for z in 1:length(d3n12_pm)
     else
         write(file_pm_smooth, string(z), "\n")
     end
-    println(z, ": ", I)
+    println(z, ": ", vf)
 end
 
 close(file_pm_singular)
