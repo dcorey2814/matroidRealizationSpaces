@@ -54,7 +54,7 @@ filename_nonrealizable = joinpath(currentDir, "d3n12",  string("new_nonrealizabl
 
 filename_skipped_geq3vars = joinpath(singularDir, string("principal_multivariate_geq3vars.",ARGS[2],".dat"))
 
-#for z in 1:300
+#for z in 46493:length(d3n12_pm)
 for z in 1:length(d3n12_pm)
 
     Mzstr = d3n12_pm[z]
@@ -71,7 +71,7 @@ for z in 1:length(d3n12_pm)
         open(filename_skipped_geq3vars, "a")do file
             write(file, Mzstr, "\n")
         end
-    continue
+        continue
     end
     
     
@@ -80,7 +80,7 @@ for z in 1:length(d3n12_pm)
     
     
     if !isone(I)
-        write(file_pm_singular, String(Mstr), "\n")
+        write(file_pm_singular, String(Mzstr), "\n")
     else
         write(file_pm_smooth, string(z), "\n")
     end
