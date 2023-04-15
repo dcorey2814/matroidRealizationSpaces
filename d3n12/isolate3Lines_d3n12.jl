@@ -1,22 +1,23 @@
+# ARGS[1] = input data file
+# ARGS[2] = output data file
+
 using Combinatorics
 using Oscar
 
-include("src/isolate3Lines.jl")
 
-db = Polymake.Polydb.get_db();
-collection = db["Matroids.Small"];
-cursor=Polymake.Polydb.find(collection, Dict("RANK" => 3,"SIMPLE"=>true,"N_ELEMENTS"=>12));
+currentDir = pwd()
+include(joinpath(currentDir, "src/isolate3Lines.jl"));
 
-#cursor=Polymake.Polydb.find(collection, Dict("RANK" => 3,"SIMPLE"=>true,"N_ELEMENTS"=>12), opts=Dict("skip"=>100001, "limit"=>200000));
+d3n12 = vec(readlines(joinpath(currentDir, ARGS[1])));
 
 n3C12 = collect(powerset(1:12, 3, 3));
 n3C12 = sort(n3C12, by =  x-> reverse(x));
 
-io = open("matroids_d3n12/d3n12_3lines.dat", "w")
+io = open(ARGS[2], "w")
 
-i = 0;
-for c in cursor
-    M = Matroid(c)
+i=0
+for Mstr in d3n12
+    M = matroid_from_revlex_basis_encoding(Mstr, 3, 12)    
     ns = count_3_lines_thru_all_points(M)
     
     if length(ns) == 0
@@ -26,16 +27,8 @@ for c in cursor
     if minimum(ns) >= 3
         write(io, to_revlex(M, n3C12) * "\n")
     end
-
-    # checkpoint
-    if (i%100000 == 0)
-        close(io)
-        global io = open("matroids_d3n12/d3n12_3lines.dat", "a")
-        println(i)
-    end
-
-    global i += 1
-
+    #global i += 1
+    #println(i)
 end
 
 close(io)
