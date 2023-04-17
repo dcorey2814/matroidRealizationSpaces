@@ -1,4 +1,4 @@
-#code that computes the coordinate ring of a TSC with respect to some matroid, basis, and field. We can also give the associated matrix with respect to the same basis and field. Also, we can give the reduced presentation of the coordinate ring given some basis and field.
+#code that computes the coordinate ring of a TSC with respect to some matroid, basis, and field. We can also get the associated matrix with respect to a basis and field. Also, we can get the reduced presentation of the coordinate ring given some basis and field.
 
 #Note that this code needs to interact with the code from matroid_realization.jl
 
