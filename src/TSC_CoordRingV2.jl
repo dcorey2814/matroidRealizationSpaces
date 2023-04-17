@@ -4,7 +4,7 @@
 
 #Throughout M = matroid, B = basis, F= field.
 
-
+################################################
 #compute TSC
 function TSC(M,B,F)
     d = rank(M)
