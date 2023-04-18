@@ -1,3 +1,5 @@
+#code to compute and study corank subdivisions of hyperimplex
+
 #map vertex of polytope to indices of nonzero entries
 function vertex_to_support(x)
     set = []
@@ -17,14 +19,15 @@ function corank_vector(M)
     B = bases(M)
     
     D = pm.polytope.hypersimplex(d,n)
-    V = D.VERTICES
+    V = D.VERTICES[:,[i for i in 2:n+1]]
+    
     
     x = zeros(length(V[:,1]))
 
     
     for t in 1:length(V[:,1])
         
-        b = vertex_to_support(VD[t,:])
+        b = vertex_to_support(V[t,:])
         
         x[t] = d - rank(M,b)#corank
         #x[t] = corank(M,b)
