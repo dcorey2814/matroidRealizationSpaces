@@ -1,8 +1,8 @@
-#map vertex of hypersimplex to set
-function vertex_to_set(x)
+#map vertex of polytope to indices of nonzero entries
+function vertex_to_support(x)
     set = []
     for t in 1:length(x)
-        if x[t] == 1
+        if !(x[t] == 0)
             push!(set,t)
         end
     end
@@ -24,7 +24,7 @@ function corank_vector(M)
     
     for t in 1:length(V[:,1])
         
-        b = vertex_to_set(VD[t,:])
+        b = vertex_to_support(VD[t,:])
         
         x[t] = d - rank(M,b)#corank
         #x[t] = corank(M,b)
