@@ -16,7 +16,7 @@ function corank_vector(M)
     d = rank(M)
     n = length(matroid_groundset(M))
     
-    B = bases(M)
+    corank_support = []
     
     D = pm.polytope.hypersimplex(d,n)
     V = D.VERTICES[:,[i for i in 2:n+1]]
@@ -30,10 +30,15 @@ function corank_vector(M)
         b = vertex_to_support(V[t,:])
         
         x[t] = d - rank(M,b)#corank
-        #x[t] = corank(M,b)
+        
+        if !(x[t] == 0)
+            
+            push!(corank_support,b)
+            
+        end
         
     end
-    return x
+    return (x,corank_support)
 end
 
 #checks if polytope is generalized permutahedron. input polytope needs to be convex_hull(point configuration)
