@@ -171,7 +171,7 @@ function matroid_to_reduced_expression(Q, F, k = 0)
     overlapCharts = [count_nonbases_chart_int2(Q, c) for c in charts]
     A = argmax(c -> count_nonbases_chart_int2(Q, c) , charts)
      
-#    A = charts[1]
+    #A = [1,3,5,11]
     RQ = matroid_realization_space(Q, A, F)
     R = parent(RQ[1][1])
     
