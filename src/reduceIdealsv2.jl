@@ -32,7 +32,6 @@ function gens_2_factors(Sgens)
 end
 
 
-
 #function that finds generators of ideal that contain x, checks if coefficient is in semigroup, then solves
 function find_solution_v(v, Igens, R, Sall)
     
@@ -40,17 +39,31 @@ function find_solution_v(v, Igens, R, Sall)
     (length(with_v_deg_1) != 0) || return "can't isolate"
 
     for f in with_v_deg_1
+       #println("v: ", v)        
+       #println("f: ", factor(f))
+
         no_v = [term(f,i) for i in 1:length(f) if !(v in vars(monomial(f,i)))]
-        (length(no_v) != 0) || return "can't isolate, variable is a factor"
+
+        if length(no_v) == 0
+            continue
+        end
+
+#        (length(no_v) != 0) || return "can't isolate, variable is a factor"
         
         den = coefficient_v(v, f, R)
         fac_den = poly_2_factors(den)
+       #println("den: ", den)
         
-        issubset(fac_den, Sall) || return "can't isolate, coefficient of variable is not a unit"
+        #issubset(fac_den, Sall) || return "can't isolate, coefficient of variable is not a unit"
+        if !issubset(fac_den, Sall)
+            continue
+        end
+        
         h = R(-1)*sum(no_v)
         return h//den    
     
     end
+    return "can't solve for v"
 end
 
 function sub_map(v, t, R, varlist) # v is replaced by t in f
@@ -100,7 +113,6 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
         
         for x in Ivars 
            tx = find_solution_v(x, Igens, R, Sgens)
-           #println("x, find solution = ", x, " -> ", tx)
             if tx isa String
                 continue
             else 
@@ -159,46 +171,102 @@ end
 #data for realization spaces after reduction
 
 
+function count_nonbases_disjoint_to_chart(Q, A)
+    NBs = nonbases(Q)
+    return length([nb for nb in NBs if length(intersect(A,nb)) == 0])
+end
+
+
 function count_nonbases_chart_int2(Q, A)
     NBs = nonbases(Q)
     return length([nb for nb in NBs if length(intersect(A,nb)) == 2])
 end
 
-function matroid_to_reduced_expression(Q, F, k = 0)
-    
-    charts = [c for c in circuits(Q) if length(c) == rank(Q)+1]
-    
-    overlapCharts = [count_nonbases_chart_int2(Q, c) for c in charts]
-    A = argmax(c -> count_nonbases_chart_int2(Q, c) , charts)
+
+
+function stepwise_saturation(I, Sgens)
+    for f in Sgens
+        I = saturation(I, ideal([f]))
+    end
+    return I
+end
+
+function matroid_with_chart_to_reduced_expression(Q, A, F)
      
-    #A = [1,3,5,11]
     RQ = matroid_realization_space(Q, A, F)
     R = parent(RQ[1][1])
-    
-    if k>0
-    	Sgens = [s for s in RQ[2] if length(s) <= k]#new 13.1.2023
-    else
-    	Sgens = RQ[2]
-    end
-    
+    Sgens = RQ[2]    
     Sgens = gens_2_factors(Sgens)
     
-    reducedData = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
-#    I = reduce_ideal_full(RQ[1], RQ[2], R, gens(R), false)
+    Igens = gens(stepwise_saturation(ideal(RQ[1]), Sgens))
+    
+    if R(1) in Igens
+        return ([R(1)], Sgens, A)
+    end
+        
+    
+    reducedData = reduce_ideal_full(Igens, Sgens, R, gens(R), false)
+    
+    #reducedData = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
      
     if reducedData isa String
         return reducedData
-     #I[1] = ideal generators, I[2] = subgroup generators   
     else
        
        newI = reducedData[1]
        newS = reducedData[2]
        
-#       Iclean = unique!([clean(f, R, newS) for f in newI])
-#       Iclean = filter(x-> x!= R(0), Iclean)
-       return (newI, newS)
-       # return(I[1],I[2])
+       return (newI, newS, A)
     end
+end
+
+function maximal_circuits(Q)
+    r = rank(Q)
+    return [c for c in circuits(Q) if length(c) == r+1]
+end
+
+
+function matroid_to_reduced_expression(Q, F)
+    
+    charts = [c for c in circuits(Q) if length(c) == rank(Q)+1]    
+    overlapCharts = [count_nonbases_chart_int2(Q, c) for c in charts]
+    A = argmax(c -> count_nonbases_chart_int2(Q, c) , charts)
+    ISA = matroid_with_chart_to_reduced_expression(Q, A, F)
+    
+    return (ISA[1], ISA[2]) 
+     
+end
+
+function matroid_to_reduced_expression_min_chart(Q, F)
+    
+    charts = [c for c in circuits(Q) if length(c) == rank(Q)+1]    
+    A = argmin(c -> count_nonbases_disjoint_to_chart(Q, c) , charts)
+    ISA = matroid_with_chart_to_reduced_expression(Q, A, F)
+    
+    return (ISA[1], ISA[2]) 
+     
+end
+
+
+function matroid_to_reduced_expression_fewest_var(Q, F)
+    
+    charts = [c for c in circuits(Q) if length(c) == rank(Q)+1]    
+    n = maximum([count_nonbases_chart_int2(Q, c) for c in charts])
+    As = [c for c in charts if count_nonbases_chart_int2(Q, c) >= n-1]    
+    
+    IS = []
+    for A in As
+        to_add = matroid_with_chart_to_reduced_expression(Q, A, F)
+        if length(to_add[1]) == 0
+            return to_add
+        end
+        push!(IS, to_add)
+    end
+#    IS = [matroid_with_chart_to_reduced_expression(Q, A, F) for A in As]
+    
+        
+    return argmin(a -> (ideal_vars(a[1]), length(a[1]), sum([length(b) for b in a[1]]) ) , IS)
+     
 end
 
 #reduce TSC ideals
@@ -207,7 +275,7 @@ function TSC_to_reduced_expression(M, F)
     charts = bases(M)
     #println("1")
     A = charts[1]
-   # println("2")
+    #println("2")
     RQ = new_TSC(M,F)
     #println("3")
     R = parent(RQ[1][1])
@@ -217,7 +285,7 @@ function TSC_to_reduced_expression(M, F)
     #print(length(gens(RQ[1])))
     #println("5")
     I = reduce_ideal_full(gens(RQ[1]), Sgens, R, gens(R), false)
-   # println("6")
+    #println("6")
     
      varlist = 
     if I isa String

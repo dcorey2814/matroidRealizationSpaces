@@ -47,9 +47,8 @@ file_pm_smooth = open(joinpath(singularDir, string("principal_4var_smooth.",ARGS
 filename_pm_singular = joinpath(singularDir, string("principal_4var_singular.",ARGS[2],".dat"))
 filename_nonrealizable = joinpath(currentDir, "d3n12",  string("new_nonrealizable_4var.",ARGS[2],".dat"))
 
-filename_skipped = joinpath(singularDir, string("principal_4var_geq50_terms.",ARGS[2],".dat"))
-
-
+#filename_skipped = joinpath(singularDir, string("principal_4var_geq30_terms.",ARGS[2],".dat"))
+#skipped_num_terms = Vector()
 
 for z in 1:length(d3n12_pm)
 
@@ -61,15 +60,12 @@ for z in 1:length(d3n12_pm)
     
     f = Igens[1]
         
-    println(z, ": ", f)
+    println(z, ": ", length(f))
         
-#    if length(f) >= 50
-#        open(filename_skipped, "w")do file
-#            write(file, Mzstr, "\n")
-#        end
+#    if length(f) >= 30
+#        push!(skipped_num_terms, (Mzstr, length(f))) 
 #        continue
 #    end    
-        
         
     I = simplified_2_singular_locus_with_saturation_check(Igens, Sgens, Mzstr, filename_nonrealizable);    
     
@@ -81,5 +77,13 @@ for z in 1:length(d3n12_pm)
         write(file_pm_smooth, Mzstr, "\n")
     end
 end
+
+#sort!(skipped_num_terms, by = x -> x[2] )
+
+#open(filename_skipped, "w")do file
+#    for a in skipped_num_terms
+#        write(file, a[1], "\n")
+#    end
+#end
 
 close(file_pm_smooth)
