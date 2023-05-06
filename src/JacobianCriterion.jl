@@ -1,14 +1,6 @@
-
 # creates the jacobian matrix from chosen generators
 function jacobian_matrix(R::MPolyRing, x::Vector{T}, Igens::Vector{T}) where T <: MPolyElem
     return matrix(R, [derivative(f,j) for f in Igens, j in 1:length(x) ])
-end
-
-function stepwise_saturation(I, Sgens)
-    for f in Sgens
-        I = saturation(I, ideal([f]))
-    end
-    return I
 end
 
 # creates the ideal of the singular locus of the ideal I
