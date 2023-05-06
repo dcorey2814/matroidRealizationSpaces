@@ -20,6 +20,11 @@ function make_directory(dir::AbstractString)
 end
 
 function simplified_2_singular_locus_with_saturation_check(Igens, Sgens, Qstr, f="")
+
+
+    if length(Igens) == 0
+        return ideal([1])
+    end
     L = remove_excess_vars(Igens, Sgens)
 
     I = stepwise_saturation(ideal(L[3]), L[4])
