@@ -203,7 +203,7 @@ function matroid_with_chart_to_reduced_expression(Q, A, F)
     
     if reducedData isa String
         return reducedData
-    else
+    end
     
     Igens = reducedData[1]
     Sgens = reducedData[2]
@@ -225,6 +225,7 @@ function matroid_with_chart_to_reduced_expression(Q, A, F)
 
        return (newI, newS, A)
     end
+end
     
     
 #    Igens = gens(stepwise_saturation(ideal(RQ[1]), Sgens))
@@ -244,7 +245,6 @@ function matroid_with_chart_to_reduced_expression(Q, A, F)
        
 #       return (newI, newS, A)
 #    end
-end
 
 function maximal_circuits(Q)
     r = rank(Q)
