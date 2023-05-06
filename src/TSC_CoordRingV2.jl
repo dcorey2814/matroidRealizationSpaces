@@ -36,7 +36,7 @@ function TSC_matrix(M,B,F)
     
     X = make_coordinate_matrix(d, n, MC,B,R, x,xdict)
     
-    return X
+    return X,R
     
 end
 
