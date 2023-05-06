@@ -16,8 +16,6 @@ function corank_vector(M)
     d = rank(M)
     n = length(matroid_groundset(M))
     
-    corank_support = []
-    
     D = pm.polytope.hypersimplex(d,n)
     V = D.VERTICES[:,[i for i in 2:n+1]]
     
@@ -31,14 +29,9 @@ function corank_vector(M)
         
         x[t] = d - rank(M,b)#corank
         
-        if !(x[t] == 0)
-            
-            push!(corank_support,b)
-            
-        end
         
     end
-    return (x,corank_support)
+    return x
 end
 
 #checks if polytope is generalized permutahedron. input polytope needs to be convex_hull(point configuration)
@@ -76,3 +69,24 @@ function is_genperm(P)
     
 end
 #this is way too slow and clunky, but it works
+
+
+#input: matroid subdivision of hypersimplex, rank and dimension. returns matroids corresponding to cells.
+function subdivision_to_matroids(S,d,n)
+    matroids = []
+    
+    Cells = maximal_cells(S)
+    D = pm.polytope.hypersimplex(d,n)
+    
+    
+    V = D.VERTICES[:,[n for n in 2:n+1]]
+    
+    for c in Cells
+        verts = [vertex_to_support(V[t,:]) for t in c]
+        M = matroid_from_bases(verts,n)
+        push!(matroids,M)
+    end
+    
+    return matroids
+    
+end
