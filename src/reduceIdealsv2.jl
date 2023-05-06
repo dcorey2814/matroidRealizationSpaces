@@ -208,7 +208,7 @@ function matroid_with_chart_to_reduced_expression(Q, A, F)
     Igens = reducedData[1]
     Sgens = reducedData[2]
     
-    Igens = gens(stepwise_saturation(Igens, Sgens))
+    Igens = gens(stepwise_saturation(ideal(Igens), Sgens))
     
     if R(1) in Igens
         return ([R(1)], Sgens, A)
