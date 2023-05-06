@@ -25,6 +25,16 @@ function simplified_2_singular_locus_with_saturation_check(Igens, Sgens, Qstr, f
     if length(Igens) == 0
         return ideal([1])
     end
+    
+    if all([is_unit(g) for g in Igens])
+        if length(f) > 0
+            open(f, "a")do file
+                write(file, Qstr, "\n")
+            end
+        end
+        return "is one"
+    end
+    
     L = remove_excess_vars(Igens, Sgens)
 
     I = stepwise_saturation(ideal(L[3]), L[4])
