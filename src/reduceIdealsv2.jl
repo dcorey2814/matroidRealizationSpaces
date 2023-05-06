@@ -198,26 +198,52 @@ function matroid_with_chart_to_reduced_expression(Q, A, F)
     Sgens = RQ[2]    
     Sgens = gens_2_factors(Sgens)
     
-    Igens = gens(stepwise_saturation(ideal(RQ[1]), Sgens))
+    Igens_notsat = gens(ideal(RQ[1]))
+    reducedData = reduce_ideal_full(Igens_notsat, Sgens, R, gens(R), false)
     
-    if R(1) in Igens
-        return ([R(1)], Sgens, A)
-    end
-        
-    
-    reducedData = reduce_ideal_full(Igens, Sgens, R, gens(R), false)
-    
-    #reducedData = reduce_ideal_full(RQ[1], Sgens, R, gens(R), false)
-     
     if reducedData isa String
         return reducedData
     else
-       
-       newI = reducedData[1]
-       newS = reducedData[2]
-       
+    
+    Igens = reducedData[1]
+    Sgens = reducedData[2]
+    
+    Igens = gens(stepwise_saturation(Igens, Sgens))
+    
+    if R(1) in Igens
+        return ([R(1)], Sgens, A)
+    end    
+    
+    reducedData = reduce_ideal_full(Igens, Sgens, R, gens(R), false)
+
+    if reducedData isa String
+        return reducedData
+    else    
+
+        newI = reducedData[1]
+        newS = reducedData[2]
+
        return (newI, newS, A)
     end
+    
+    
+#    Igens = gens(stepwise_saturation(ideal(RQ[1]), Sgens))
+    
+#    if R(1) in Igens
+#        return ([R(1)], Sgens, A)
+#    end    
+    
+#    reducedData = reduce_ideal_full(Igens, Sgens, R, gens(R), false)
+     
+#    if reducedData isa String
+#        return reducedData
+#    else
+       
+#       newI = reducedData[1]
+#       newS = reducedData[2]
+       
+#       return (newI, newS, A)
+#    end
 end
 
 function maximal_circuits(Q)
@@ -236,6 +262,20 @@ function matroid_to_reduced_expression(Q, F)
     return (ISA[1], ISA[2]) 
      
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function matroid_to_reduced_expression_min_chart(Q, F)
     
