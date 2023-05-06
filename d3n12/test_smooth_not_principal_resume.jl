@@ -76,7 +76,17 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     println(z, " numvars : ", length(varsIgens), " gens: ", length(Igens))
 
 
+    
     if length(Igens) == 0
+        open(filename_zeroideal, "a") do file
+            write(file, Mzstr, "\n")
+        end
+        continue
+    end 
+    
+    R = parent(Igens[1])
+    
+    if Igens == [R(0)] 
         open(filename_zeroideal, "a") do file
             write(file, Mzstr, "\n")
         end
