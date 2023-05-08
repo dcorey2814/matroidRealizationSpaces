@@ -42,13 +42,15 @@ for z in 1:length(d3n12)
     
     Igens, Sgens, A = matroid_with_chart_to_reduced_expression(Mz, A, QQ);
 
-    varsIgens = unique!(vcat([vars(f) for f in Igens]...))
-    
-
     length(Igens) == 0 && continue
     any([is_unit(a) for a in Igens]) && continue
+
+
+    varsIgens = unique!(vcat([vars(f) for f in Igens]...))
     
-    m_primes = minimal_primes(ideal(Igens)); 
+    I = stepwise_saturation(ideal(Igens), Sgens)
+    
+    m_primes = minimal_primes(I); 
     not_unique = codim.(m_primes);
     codim_m_primes = unique!(not_unique); 
     println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens), " codims primes: ", not_unique)

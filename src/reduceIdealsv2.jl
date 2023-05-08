@@ -223,6 +223,7 @@ function matroid_with_chart_to_reduced_expression(Q, A, F)
     if length(newI) == 0
         newI = [R(0)]
     end
+    
     return (newI, newS, A)
     
 end
