@@ -201,37 +201,30 @@ function matroid_with_chart_to_reduced_expression(Q, A, F)
     Igens_notsat = gens(ideal(RQ[1]))
     reducedData = reduce_ideal_full(Igens_notsat, Sgens, R, gens(R), false)
     
-    if reducedData isa String
-        return reducedData
-    end
+    reducedData isa String && return reducedData
     
     Igens = reducedData[1]
     Sgens = reducedData[2]
     
-    
-    if length(Igens)==0
+    if length(Igens) == 0 
         Igens = [R(0)]
-    end
+    end 
     
     Igens = gens(stepwise_saturation(ideal(Igens), Sgens))
     
-    if R(1) in Igens
-        return ([R(1)], Sgens, A)
-    end    
-    
+    any([is_unit(g) for g in Igens]) && return ([R(1)], Sgens, A)
+        
     reducedData = reduce_ideal_full(Igens, Sgens, R, gens(R), false)
 
-    if reducedData isa String
-        return reducedData
-    else    
+    reducedData isa String && return reducedData
 
-        newI = reducedData[1]
-        newS = reducedData[2]
-        if length(newI) == 0
-            newI = [R(0)]
-        end
-        return (newI, newS, A)
+    newI = reducedData[1]
+    newS = reducedData[2]
+    if length(newI) == 0
+        newI = [R(0)]
     end
+    return (newI, newS, A)
+    
 end
     
     
@@ -269,18 +262,6 @@ function matroid_to_reduced_expression(Q, F)
     return (ISA[1], ISA[2]) 
      
 end
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
