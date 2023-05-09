@@ -81,7 +81,7 @@ for z in 1:length(d3n12)
         write(io_zero, Mzstr, "\n")
     elseif any([is_unit(a) for a in Igens])
         write(io_one, Mzstr, "\n")    
-    elseif length(varIgens) == 1
+    elseif length(varsIgens) == 1
         write(io_uni, Mzstr, "\n")
     elseif length(Igens) == 1
         write(io_prin, Mzstr, "\n")
