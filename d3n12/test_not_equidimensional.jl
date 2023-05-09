@@ -20,15 +20,24 @@ end
 
 min_prime_dir = make_directory(joinpath(currentDir, "d3n12/min_primes")) 
 
-filename_equidimensional = joinpath(min_prime_dir, string("equidimensional.",ARGS[2],".dat"))
-filename_not_equidimensional = joinpath(min_prime_dir, string("not_equidimensional.",ARGS[2],".dat"))
+filename_zero = joinpath(min_prime_dir, string("zero.",ARGS[2],".dat"))
+filename_one = joinpath(min_prime_dir, string("one.",ARGS[2],".dat"))
+filename_univariate = joinpath(min_prime_dir, string("univariate.",ARGS[2],".dat"))
+filename_principal = joinpath(min_prime_dir, string("principal.",ARGS[2],".dat"))
+
+filename_equidimensional = joinpath(min_prime_dir, string("var2_equidimensional.",ARGS[2],".dat"))
+filename_not_equidimensional = joinpath(min_prime_dir, string("var2_not_equidimensional.",ARGS[2],".dat"))
 
 
 function to_star0(S,n)
     return join(map(x -> x in S ? "*" : "0", 1:n ))
 end
 
-io = open(filename_equidimensional, "w")
+is_zero = open(filename_zero, "w") 
+is_one = open(filename_one, "w") 
+is_uni = open(filename_univariate, "w") 
+is_prin = open(filename_principal, "w")
+io_var2 = open(filename_equidimensional, "w")
 
 for z in 1:length(d3n12)
 
@@ -42,29 +51,48 @@ for z in 1:length(d3n12)
     
     Igens, Sgens, A = matroid_with_chart_to_reduced_expression(Mz, A, QQ);
 
-    length(Igens) == 0 && continue
-    any([is_unit(a) for a in Igens]) && continue
 
-
-    varsIgens = unique!(vcat([vars(f) for f in Igens]...))
+    if length(Igens) == 0 
+        write(io_zero, Mzstr, "\n")
+        continue
+    elseif any([is_unit(a) for a in Igens])
+        write(io_one, Mzstr, "\n")
+        continue
+    end
     
     I = stepwise_saturation(ideal(Igens), Sgens)
+    Igens = gens(I)
+    varsIgens = unique!(vcat([vars(f) for f in Igens]...))
     
+      
     m_primes = minimal_primes(I); 
-    not_unique = codim.(m_primes);
-    codim_m_primes = unique!(not_unique); 
-    println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens), " codims primes: ", not_unique)
+    codim_m_primes = codim.(m_primes);
+    println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens), " codims primes: ", codim_m_primes)
+    unique!(codim_m_primes); 
     
     if length(codim_m_primes) > 1
         open(filename_not_equidimensional, "a") do file
             write(file, Mzstr, "\n")
         end
-    else
-        write(io, Mzstr, "\n")
+        continue
     end
     
-    
-    
+    if length(Igens) == 0 
+        write(io_zero, Mzstr, "\n")
+    elseif any([is_unit(a) for a in Igens])
+        write(io_one, Mzstr, "\n")    
+    elseif length(varIgens) == 1
+        write(io_uni, Mzstr, "\n")
+    elseif length(Igens) == 1
+        write(io_prin, Mzstr, "\n")
+    else
+        write(io_var2, Mzstr, "\n")
+    end    
 end
 
-close(io)
+close(io_zero)
+close(io_one)
+close(io_uni)
+close(io_prin)
+close(io_var2)
+
