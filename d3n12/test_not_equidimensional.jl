@@ -33,10 +33,10 @@ function to_star0(S,n)
     return join(map(x -> x in S ? "*" : "0", 1:n ))
 end
 
-is_zero = open(filename_zero, "w") 
-is_one = open(filename_one, "w") 
-is_uni = open(filename_univariate, "w") 
-is_prin = open(filename_principal, "w")
+io_zero = open(filename_zero, "w") 
+io_one = open(filename_one, "w") 
+io_uni = open(filename_univariate, "w") 
+io_prin = open(filename_principal, "w")
 io_var2 = open(filename_equidimensional, "w")
 
 for z in 1:length(d3n12)
