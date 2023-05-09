@@ -39,7 +39,7 @@ io_uni = open(filename_univariate, "a")
 io_prin = open(filename_principal, "a")
 io_var2 = open(filename_equidimensional, "a")
 
-for z in ARGS[3]:length(d3n12)
+for z in parse(Int64, ARGS[3]):length(d3n12)
 
     Mzstr = d3n12[z]
     Mz = matroid_from_revlex_basis_encoding(Mzstr, 3, 12);
