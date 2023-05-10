@@ -86,7 +86,7 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     
     println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens))
     
-    if length(varsIgens) >= 2
+    if length(varsIgens) <= 2
       
         m_primes = minimal_primes(I); 
         codim_m_primes = codim.(m_primes);
