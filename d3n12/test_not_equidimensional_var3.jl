@@ -98,7 +98,6 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
                 write(file, Mzstr, "\n")
             end
             continue
-        end
     
         else
             write(io_var2, Mzstr, "\n")
