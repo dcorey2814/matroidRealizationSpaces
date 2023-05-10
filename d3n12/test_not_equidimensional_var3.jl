@@ -70,6 +70,8 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     Igens = gens(I)
     varsIgens = unique!(vcat([vars(f) for f in Igens]...))
     
+    println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens))
+    
     if length(Igens) == 0 
         write(io_zero, Mzstr, "\n")
         continue
@@ -83,8 +85,6 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
         write(io_prin, Mzstr, "\n")
         continue
     end
-    
-    println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens))
     
     if length(varsIgens) <= 2
       
