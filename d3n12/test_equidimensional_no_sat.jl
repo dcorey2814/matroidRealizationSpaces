@@ -81,7 +81,7 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     
     Mzstr = to_star0(A,12) * Mzstr
     
-    Igens, Sgens, A = matroid_with_chart_to_reduced_expression(Mz, A, QQ);
+    Igens, Sgens, A = matroid_with_chart_to_reduced_expression_no_saturation(Mz, A, QQ);
 
 
     if length(Igens) == 0 
