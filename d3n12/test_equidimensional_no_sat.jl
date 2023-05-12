@@ -28,10 +28,19 @@ filename_principal = joinpath(min_prime_dir, string("principal.",ARGS[2],".dat")
 filename_equidimensional = joinpath(min_prime_dir, string("var2_equidimensional.",ARGS[2],".dat"))
 filename_not_equidimensional = joinpath(min_prime_dir, string("var2_not_equidimensional.",ARGS[2],".dat"))
 
+filename_var3 = joinpath(min_prime_dir, string("vargeq3.",ARGS[2],".dat"))
 
 function to_star0(S,n)
     return join(map(x -> x in S ? "*" : "0", 1:n ))
 end
+
+
+io_zero = open(filename_zero, "a") 
+io_one = open(filename_one, "a") 
+io_uni = open(filename_univariate, "a") 
+io_prin = open(filename_principal, "a")
+io_var2 = open(filename_equidimensional, "a")
+io_var3 = open(filename_var3, "a")
 
 
 function matroid_with_chart_to_reduced_expression_no_saturation(Q, A, F)
@@ -43,9 +52,7 @@ function matroid_with_chart_to_reduced_expression_no_saturation(Q, A, F)
     
     Igens_notsat = gens(ideal(RQ[1]))
     
-    
     reducedData = reduce_ideal_full(Igens_notsat, Sgens, R, gens(R), false)
-    
     reducedData isa String && return reducedData
     
     Igens = reducedData[1]
@@ -55,17 +62,11 @@ function matroid_with_chart_to_reduced_expression_no_saturation(Q, A, F)
         Igens = [R(0)]
     end 
 
-    Igens = collect(gorebner_basis(ideal(Igens)))
+    Igens = collect(groebner_basis(ideal(Igens)))
         
     return (Igens, Sgens, A)
     
 end
-
-io_zero = open(filename_zero, "a") 
-io_one = open(filename_one, "a") 
-io_uni = open(filename_univariate, "a") 
-io_prin = open(filename_principal, "a")
-io_var2 = open(filename_equidimensional, "a")
 
 for z in parse(Int64, ARGS[3]):length(d3n12)
 
@@ -73,11 +74,14 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     Mz = matroid_from_revlex_basis_encoding(Mzstr, 3, 12);
     
     charts = maximal_circuits(Mz)
-    A = argmax(c -> count_nonbases_chart_int2(Mz, c) , charts)
-
+    mx = maximum(c -> count_nonbases_chart_int2(Mz, c) , charts)
+    options = [c for c in charts if count_nonbases_chart_int2(Mz, c) >= mx-1]
+    
+    A = options[2]
+    
     Mzstr = to_star0(A,12) * Mzstr
     
-    Igens, Sgens, A = matroid_with_chart_to_reduced_expression_no_saturation(Mz, A, QQ);
+    Igens, Sgens, A = matroid_with_chart_to_reduced_expression(Mz, A, QQ);
 
 
     if length(Igens) == 0 
@@ -87,31 +91,46 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
         write(io_one, Mzstr, "\n")
         continue
     end
+    
+    
     varsIgens = unique!(vcat([vars(f) for f in Igens]...))
     
-      
-    m_primes = minimal_primes(I); 
-    codim_m_primes = codim.(m_primes);
-    println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens), " codims primes: ", codim_m_primes)
-    unique!(codim_m_primes); 
-    
-    if length(codim_m_primes) > 1
-        open(filename_not_equidimensional, "a") do file
-            write(file, Mzstr, "\n")
-        end
-        continue
-    end
+    println(z,  " numvars : ", length(varsIgens), " gens: ", length(Igens))
     
     if length(Igens) == 0 
         write(io_zero, Mzstr, "\n")
+        continue
     elseif any([is_unit(a) for a in Igens])
         write(io_one, Mzstr, "\n")    
+        continue
     elseif length(varsIgens) == 1
         write(io_uni, Mzstr, "\n")
+        continue
     elseif length(Igens) == 1
         write(io_prin, Mzstr, "\n")
+        continue
+    end
+    
+    if length(varsIgens) <= 2
+        I = stepwise_saturation(ideal(Igens), Sgens)
+        Igens = gens(I)
+        
+        m_primes = minimal_primes(I); 
+        codim_m_primes = codim.(m_primes);
+        println(z, " codims primes: ", codim_m_primes)
+        unique!(codim_m_primes); 
+    
+        if length(codim_m_primes) > 1
+            open(filename_not_equidimensional, "a") do file
+                write(file, Mzstr, "\n")
+            end
+            continue
+    
+        else
+            write(io_var2, Mzstr, "\n")
+        end
     else
-        write(io_var2, Mzstr, "\n")
+        write(io_var3, Mzstr, "\n")
     end    
 end
 
@@ -120,4 +139,4 @@ close(io_one)
 close(io_uni)
 close(io_prin)
 close(io_var2)
-
+close(io_var3)
