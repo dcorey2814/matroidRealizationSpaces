@@ -83,6 +83,7 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
         A = charts[4]
     else
         A = charts[1]
+    end
         
     
     Mzstr = to_star0(A,12) * Mzstr
