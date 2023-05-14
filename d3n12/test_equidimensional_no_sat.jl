@@ -77,7 +77,13 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     mx = maximum(c -> count_nonbases_chart_int2(Mz, c) , charts)
     options = [c for c in charts if count_nonbases_chart_int2(Mz, c) >= mx-1]
     
-    A = options[2]
+    if length(options) >=3
+        A = options[3]
+    elseif length(charts) > 3
+        A = charts[4]
+    else
+        A = charts[1]
+        
     
     Mzstr = to_star0(A,12) * Mzstr
     
