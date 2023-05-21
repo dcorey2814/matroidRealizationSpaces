@@ -77,12 +77,12 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     mx = maximum(c -> count_nonbases_chart_int2(Mz, c) , charts)
     options = [c for c in charts if count_nonbases_chart_int2(Mz, c) >= mx-1]
     
-    if length(options) >=6
-        A = options[6]
-    elseif length(charts) > 5
-        A = charts[6]
+    if length(options) >=7
+        A = options[7]
+    elseif length(charts) > 6
+        A = charts[7]
     else
-        A = charts[1]
+        A = last(charts)
     end
         
     
