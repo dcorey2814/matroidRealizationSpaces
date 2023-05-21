@@ -80,8 +80,10 @@ for z in parse(Int64, ARGS[3]):length(d3n12)
     if length(options) >=7
         A = options[7]
     elseif length(charts) > 6
+                println("not enough max charts")
         A = charts[7]
     else
+        println("not enough charts")
         A = last(charts)
     end
         
