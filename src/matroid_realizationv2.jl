@@ -1,7 +1,7 @@
 struct MatroidRealizationSpace
     defining_ideal::Union{Ideal, NumFieldOrdIdl, Nothing}
     inequations::Union{Vector{Oscar.RingElem},Nothing}
-    ambient_ring::Union{Oscar.MPolyRing, Ring, Nothing}
+    ambient_ring::Union{Oscar.MPolyRing, Oscar.Ring, Nothing}
     representation_matrix::Union{Oscar.MatElem,Nothing}
     representable::Bool
 end
