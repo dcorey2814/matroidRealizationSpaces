@@ -73,7 +73,7 @@ function projective_identity(d::Int)
 end
 
 function interlace_columns(M::MatrixElem{<:RingElem}, N::MatrixElem{<:RingElem}, 
-                           B::Vector{Int}, R::Ring)   
+                           B::Vector{Int}, R::AbstractAlgebra.Ring)   
     
     M_nrows, M_ncols = size(M)
     N_nrows, N_ncols = size(N)
