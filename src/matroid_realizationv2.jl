@@ -357,7 +357,7 @@ end
 
 
 # replace v by t in f, only return the numerator.
-function sub_v(v::RingElem, t::RingElem, f::RingElem, R::Ring, xs::Vector{<:RingElem}) 
+function sub_v(v::RingElem, t::RingElem, f::RingElem, R::AbstractAlgebra.Ring, xs::Vector{<:RingElem}) 
     m = sub_map(v,t,R,xs) 
     new_f = numerator(m(f))
     return new_f 
@@ -381,13 +381,13 @@ function ideal_vars(Igens::Vector{<:RingElem})
 end
 
 function n_new_Sgens(x::RingElem, t::RingElem, Sgens::Vector{<:RingElem}, 
-                     R::Ring, xs::Vector{<:RingElem}) 
+                     R::AbstractAlgebra.Ring, xs::Vector{<:RingElem}) 
     preSgens = unique!([sub_v(x, t, f, R, xs) for f in Sgens])
     return gens_2_factors(preSgens)
 end
 
 function n_new_Igens(x::RingElem, t::RingElem, Igens::Vector{<:RingElem}, 
-                     Sgens::Vector{<:RingElem}, R::Ring, xs::Vector{<:RingElem}) 
+                     Sgens::Vector{<:RingElem}, R::AbstractAlgebra.Ring, xs::Vector{<:RingElem}) 
 
     preIgens = unique!([clean(sub_v(x, t, f, R, xs), R, Sgens) for f in Igens])
     return filter(x-> x!= R(0), preIgens)
