@@ -68,6 +68,13 @@ function matroid_with_chart_to_reduced_expression_no_saturation(Q, A, F)
     
 end
 
+
+function small_var3(Igens)
+    varg
+
+
+end
+
 for z in parse(Int64, ARGS[3]):length(d3n12)
 
     Mzstr = d3n12[z]
