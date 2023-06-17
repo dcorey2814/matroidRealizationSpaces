@@ -184,6 +184,22 @@ function new_matroid_realization_space(Q::Matroid, A::Vector{Int};
 end
 
 
+function rank_plus1_circuits(Q::Matroid)
+    rk = rank(Q) 
+    return [c for c in circuits(Q) if length(c) == rk+1]
+end
+
+function count_nonbases_meeting_circuit_2elem(Q::Matroid, A::Vector{Int64})
+    NBs = nonbases(Q)
+    return length([nb for nb in NBs if length(intersect(A,nb)) == 2])
+end
+
+function optimal_circuits(Q::Matroid)
+    As = rank_plus1_circuits(Q)
+    mx = maximum([count_nonbases_meeting_circuit_2elem(Q, A) for A in As])
+    return [A for A in As if count_nonbases_meeting_circuit_2elem(Q, A) == mx] 
+end
+
 #####################
 # full reduction    #
 #####################
@@ -385,11 +401,4 @@ function reduce_ideal_full(MRS::MatroidRealizationSpace,
     MRS_new = MatroidRealizationSpace(Inew, normal_Sgens, ambR, Xnew, MRS.representable)
 
     return MRS_new
-end
-
-
-function rank_plus1_circuits(Q::Matroid)
-    rk = rank(Q) 
-    mc = [c for c in circuits(Q) if length(c) == rk+1]
-    return mc
 end
