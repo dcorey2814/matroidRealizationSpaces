@@ -1,4 +1,4 @@
-#code that computes the coordinate ring of a TSC with respect to some matroid, basis, and field. We can also get the associated matrix with respect to a basis and field. Also, we can get the reduced presentation of the coordinate ring given some basis and field.
+#code that computes the coordinate ring of a TSC with respect to some matroid, basis, and field. We can also get the associated matrix with respect to a basis and field. Also, we can get the reduced presentation of the coordinate ring given some basis and field. 
 
 #Note that this code needs to interact with the code from matroid_realization.jl
 
@@ -74,6 +74,7 @@ function find_solution_v(v, Igens, R, Sall)
     end
     return "can't solve for v"
 end
+
 
 function sub_map(v, t, R, varlist) # v is replaced by t in f
     sub_x = []
@@ -192,6 +193,21 @@ function bases_matrix_coordinates(Bs::Vector{Vector{Int}}, B::Vector{Int})
 end
 
 
+# This makes the matrix X from which we compute the coordinate ring of the matroid
+# stratum. It has the identity matrix at columns indexed by B, 0's at locations
+# determined by the nonbases of X. 
+function make_coordinate_matrix(d::Int, n::Int, MC::Vector{Vector{Int}},
+                                B::Vector{Int},
+                                R::MPolyRing, x::Vector{T},
+                                xdict::Dict{Vector{Int}, MPolyElem}) where T <: MPolyElem
+    
+    Id = identity_matrix(R,d)
+    Xpre = make_coordinate_matrix_no_identity(d, n, MC, R, x, xdict)
+    return interlace_columns(Id, Xpre, B, R, x)
+end
+
+
+
 
 # Given the bases Bs of a matroid, a fixed basis B, and a coefficient field F
 # this function creates a polynomial ring in xij, where the xij are 
@@ -207,6 +223,29 @@ function make_polynomial_ring(Bs::Vector{Vector{Int}}, B::Vector{Int},
     return R, x, xdict
 end
 
+
+function make_coordinate_matrix_no_identity(d::Int, n::Int,
+                                            MC::Vector{Vector{Int}},
+                                            R::MPolyRing, x::Vector{T},
+                                            xdict::Dict{Vector{Int}, MPolyElem}) where T <: MPolyElem
+    
+    S = MatrixSpace(R, d, n-d)
+    X = S()
+    for j in 1:n-d, i in 1:d
+        if [i,j] in MC
+            X[i,j] = xdict[[i,j]]
+        else
+            X[i,j] = R(0)
+        end
+    end
+    return X
+end
+
+#find basis that gives simplest ideal
+function count_nonbases_disjoint_to_chart(Q, A)
+    NBs = nonbases(Q)
+    return length([nb for nb in NBs if length(intersect(A,nb)) == 0])
+end
 
 
 #compute TSC
@@ -246,20 +285,6 @@ function interlace_columns(M, N, B::Vector{Int},
     
     return X 
 end
-
-# This makes the matrix X from which we compute the coordinate ring of the matroid
-# stratum. It has the identity matrix at columns indexed by B, 0's at locations
-# determined by the nonbases of X. 
-function make_coordinate_matrix(d::Int, n::Int, MC::Vector{Vector{Int}},
-                                B::Vector{Int},
-                                R::MPolyRing, x::Vector{T},
-                                xdict::Dict{Vector{Int}, MPolyElem}) where T <: MPolyElem
-    
-    Id = identity_matrix(R,d)
-    Xpre = make_coordinate_matrix_no_identity(d, n, MC, R, x, xdict)
-    return interlace_columns(Id, Xpre, B, R, x)
-end
-
 
 #Coord matrix wrt basis and field
 function TSC_matrix(M,B,F)
