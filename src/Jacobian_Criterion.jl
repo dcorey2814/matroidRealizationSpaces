@@ -34,13 +34,14 @@ function realization_space_2_singular_locus(RS::MatroidRealizationSpace)
     
     !RS.representable && return "not representable"
     
-    R = RS.ambient_ring
+    R= RS.ambient_ring
+    x = gens(R)
     I = RS.defining_ideal
     S = RS.inequations
     
     I = stepwise_saturation(I, S)
     isone(I)  && return "not representable"
     
-    S = singular_locus()
+    S = singular_locus(R,x,I,S,true)
 end
 
