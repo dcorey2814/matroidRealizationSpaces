@@ -9,7 +9,7 @@ include(joinpath(currentDir, "src/matroid_realization.jl"))
 include(joinpath(currentDir, "src/Jacobian_Criterion.jl"))
 
 
-not_realizable = vec(readlines(joinpath(currentDir, "d3n11/nonrealizable.dat")));
+not_realizable = vec(readlines(joinpath(currentDir, "d3n11/nonrealizable_3_11.dat")));
 
 test_nonrealizable = []
 

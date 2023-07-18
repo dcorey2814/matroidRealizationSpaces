@@ -14,7 +14,7 @@ collection = db["Matroids.Small"];
 d3n11 = Polymake.Polydb.find(collection, Dict("RANK" => 3, "SIMPLE"=>true, "N_ELEMENTS"=>11));
 
 
-n3C11 = subsets(collect(1:10), 3);
+n3C11 = subsets(collect(1:11), 3);
 n3C11 = sort(n3C11, by =  x-> reverse(x));
 
 lines_3 = []
@@ -29,6 +29,6 @@ for c in d3n11
     end
 end
 
-lines_3_precomputed = vec(readlines(joinpath(currentDir, "d3n11/3lines_d3n11.dat")));
+lines_3_precomputed = vec(readlines(joinpath(currentDir, "d3n11/3lines_3_11.dat")));
 
 print(Set(lines_3) == Set(lines_3_precomputed))
