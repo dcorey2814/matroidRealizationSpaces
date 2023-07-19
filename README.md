@@ -7,3 +7,14 @@ julia> using Pkg
 julia> Pkg.instantiate()
 ```
 
+## Functions and documentation
+
+All new functions are in the `src` directory. The documentation is contained in the `jupyter` notebook `functionDocumentation.ipynb`.
+
+## Smoothness of realization spaces
+
+The code used to determine smoothness (and in some cases, irreducibility) may be found in the folders `d3n9`, `d3n10`, `d3n11`, `d4n8`, `d4n9`, where, e.g., `d3n9` contains the data for rank $d=3$ matroids on $n=9$ elements. In each folder is a `jupyter` notebook that contains all instructions for the smoothness tests. 
+
+## Singular realization spaces
+
+The `jupyter` notebook `matroids-3-12.ipynb` contains code to verify that the $(3,12)$--matroid in section 4.2 has a singular realization space, as well as code used in Proposition 6.7 to verify that the coordinatewise valuation of the Pl\uuml&cker coordinates of the row spans of the matrices $C_1, C_2$ both equal the corank vector of this matroid. 
