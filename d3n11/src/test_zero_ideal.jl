@@ -8,7 +8,7 @@ include(joinpath(currentDir, "src/isolate3Lines.jl"))
 include(joinpath(currentDir, "src/matroid_realization.jl"))
 include(joinpath(currentDir, "src/Jacobian_Criterion.jl"))
 
-zero_ideal = vec(readlines(joinpath(currentDir, "d3n11/zero_ideal_3_11.dat")));
+zero_ideal = vec(readlines(joinpath(currentDir, "d3n11/data/zero_ideal_3_11.dat")));
 
 test_zero = []
 for cir_Qstr in zero_ideal

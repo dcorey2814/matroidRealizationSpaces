@@ -29,6 +29,6 @@ for c in d3n11
     end
 end
 
-lines_3_precomputed = vec(readlines(joinpath(currentDir, "d3n11/3lines_3_11.dat")));
+lines_3_precomputed = vec(readlines(joinpath(currentDir, "d3n11/data/3lines_3_11.dat")));
 
 print(Set(lines_3) == Set(lines_3_precomputed))

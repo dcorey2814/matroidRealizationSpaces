@@ -6,7 +6,7 @@ include(joinpath(currentDir, "src/isolate3Lines.jl"))
 include(joinpath(currentDir, "src/matroid_realization.jl"))
 include(joinpath(currentDir, "src/Jacobian_Criterion.jl"))
 
-principal_ideal = vec(readlines(joinpath(currentDir, "d3n11/multivariate_principal_ideal_3_11.dat")));
+principal_ideal = vec(readlines(joinpath(currentDir, "d3n11/data/multivariate_principal_ideal_3_11.dat")));
 
 test_principal = []
 for cir_Qstr in principal_ideal
