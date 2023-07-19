@@ -1,0 +1,7 @@
+name = "matroidRealizationSpaces"
+uuid = "d8ce2bc7-c4d8-4a20-b03e-26a07f59a9fd"
+authors = ["daniel <dcorey2814@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Oscar = "f1435218-dba5-11e9-1e4d-f1a5fab5fc13"
