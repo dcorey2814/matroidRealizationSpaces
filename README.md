@@ -17,4 +17,4 @@ The code used to determine smoothness (and in some cases, irreducibility) may be
 
 ## Singular realization spaces
 
-The `jupyter` notebook `matroids-3-12.ipynb` contains code to verify that the $(3,12)$--matroid in section 4.2 has a singular realization space, as well as code used in Proposition 6.7 to verify that the coordinatewise valuation of the Pl\uuml&cker coordinates of the row spans of the matrices $C_1, C_2$ both equal the corank vector of this matroid. 
+The `jupyter` notebook `matroids-3-12.ipynb` contains code to verify that the $(3,12)$--matroid in section 4.2 has a singular realization space, as well as code used in Proposition 6.7 to verify that the coordinatewise valuation of the Pl&uuml;cker coordinates of the row spans of the matrices $C_1, C_2$ both equal the corank vector of this matroid. 
