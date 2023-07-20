@@ -7,9 +7,9 @@ include(joinpath(currentDir, "src/fileHandling.jl"))
 include(joinpath(currentDir, "src/matroid_realization.jl"))
 include(joinpath(currentDir, "src/Jacobian_Criterion.jl"))
 
-univariate_ideal = vec(readlines("d4n9/univariate_ideal_4_9.dat"))
+univariate_ideal = vec(readlines("d4n9/data/univariate_ideal_4_9.dat"))
 
-multivariate_ideal = vec(readlines(joinpath(currentDir, "d4n9/multivariate_principal_ideal_4_9.dat")));
+multivariate_ideal = vec(readlines(joinpath(currentDir, "d4n9/data/multivariate_principal_ideal_4_9.dat")));
 
 principal_ideal = union(univariate_ideal,multivariate_ideal)
 

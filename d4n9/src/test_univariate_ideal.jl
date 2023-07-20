@@ -7,7 +7,7 @@ include(joinpath(currentDir, "src/fileHandling.jl"))
 include(joinpath(currentDir, "src/matroid_realization.jl"))
 include(joinpath(currentDir, "src/Jacobian_Criterion.jl"))
 
-univariate_ideal = vec(readlines(joinpath(currentDir, "d4n9/univariate_ideal_4_9.dat")));
+univariate_ideal = vec(readlines(joinpath(currentDir, "d4n9/data/univariate_ideal_4_9.dat")));
 
 test_univariate = []
 for cir_Qstr in univariate_ideal
