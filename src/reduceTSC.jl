@@ -8,6 +8,8 @@
 #functions to reduce ideals and semigrouü
 
 
+
+
 #compute coefficient seperately
 
 function coefficient_v(v,f,R)
@@ -128,6 +130,8 @@ function reduce_ideal_one_step(Igens, Sgens, R, varlist, fullyReduced)
             else 
                 Sgens_new = n_new_Sgens(x, tx, Sgens, R, varlist);
                 Igens_new = n_new_Igens(x, tx, Igens, Sgens_new, R, varlist); 
+                
+                #Rnew, xnew = PolynomialRing(coefficient_ring(R), ideal_vars(Sgens_new))
 
                 return (Igens_new, Sgens_new, R, varlist, fullyReduced)
          
@@ -219,10 +223,22 @@ function make_polynomial_ring(Bs::Vector{Vector{Int}}, B::Vector{Int},
     
     MC = bases_matrix_coordinates(Bs, B)
     R, x = PolynomialRing(F, :"x"=>MC)
+    #R, x = graded_polynomial_ring(F, :"x"=>MC)
+    #testing
+    W = ones(Int64,length(x))
+    R,x = grade(R,W)
+    #testing
     xdict = Dict{Vector{Int}, MPolyElem}([MC[i] => x[i] for i in 1:length(MC)])
     return R, x, xdict
 end
-
+#just added
+function makePolyRing(d,n,F)
+    R,x = PolynomialRing(F, :"x"=>(1:d, 1:n-d))
+    W = ones(Int64, d*(n-d))
+    R,x = grade(R,W)
+    x = reshape(x, (d,n-d))
+    return R,x
+end
 
 function make_coordinate_matrix_no_identity(d::Int, n::Int,
                                             MC::Vector{Vector{Int}},
@@ -304,18 +320,28 @@ end
 
 
 #reduced expression for TSC data
-function reduce_TSC(M,F)
+function reduce_TSC(M,B,F)
     
-    B = bases(M)[1]
+    #B = bases(M)[1]
     
-    T = TSC(M,B,F)
+    T = TSC_with_basis(M,B,F)
     
     I = reduce_ideal_full(T[1], T[2], T[3], T[4], false)
     
-    return (I[1],I[2])
+    return (I[1],I[2],I[3],I[4])
     
 end
 
+function TSC_min_bases(Q,F)
+    
+     Bs = bases(Q)
+    
+    A = argmin(c -> count_nonbases_disjoint_to_chart(Q, c) , Bs)
+    
+    RQ = TSC_with_basis(Q,A,F)
+    
+    return RQ
+end
 
 #function that finds basis with simplest vanishing ideal, uses that to compute TSC.
 
