@@ -9,7 +9,7 @@ julia> Pkg.instantiate()
 
 ## Functions and documentation
 
-All new functions are in the `src` directory. The documentation is contained in the `jupyter` notebook `functionDocumentation.ipynb`.
+All new functions are in the `src` directory. The documentation is contained in the `jupyter` notebook `functionDocumentation.ipynb`. **Note** In the file `src/matroid_realization.jl`, some of these functions and the structure `MatroidRealizationSpace`  were developed with Lukas K&uuml;hne, and will be incorporated in a later version of Oscar. 
 
 ## Smoothness of realization spaces
 
